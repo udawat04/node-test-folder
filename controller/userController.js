@@ -89,7 +89,7 @@ exports.forget = async(req,res)=>{
         .json({ message: "User is not created , please signup " });
     }
 
-    const id = alreadyEmail._id;
+    const id = alreadyEmail.id;
 
     const data = { password: newPassword };
     const result = await User.findOneAndUpdate(id, data, { new: true });
