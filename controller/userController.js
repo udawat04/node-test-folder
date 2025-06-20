@@ -33,6 +33,7 @@ exports.createUser =  async(req,res)=>{
 
 }
 exports.getall = async(req,res)=>{
+    console.log(req.user,"sdfggh");
     const result = await User.find()
     return res.status(200).send(result)
 }
