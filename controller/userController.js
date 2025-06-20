@@ -1,9 +1,22 @@
 const User = require("../model/userModel")
+const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
+const secretkey = "hdfdjkdj"
 
 exports.createUser =  async(req,res)=>{
 
     try {
-        const data = req.body;
+        const {name,email,phone,password} = req.body
+
+        const alreadyEmail = await User.findOne({email})
+        if(alreadyEmail){
+            return res.status(400).send("user already created")
+        }
+
+        const salt = bcrypt.genSaltSync(10)
+        const hash = bcrypt.hashSync(password,salt)
+
+        const data = {name,email,phone,password:hash}
         console.log(data);
 
         const newUser = new User(data);
@@ -44,10 +57,19 @@ exports.login = async(req,res)=>{
     if(!alreadyEmail){
         return res.status(400).json({message:"User is not created , please signup "})
     }
+    const dbpassword = alreadyEmail.password
+
+    const match = await bcrypt.compare(password,dbpassword)
+
+    if(!match){
+        return res.status(400).send("incorrect password / password not match")
+    }
+
+    const token = jwt.sign({email:alreadyEmail.email},secretkey,{expiresIn:"1h"})
 
     return res
       .status(200)
-      .json({ message: "User login Sucessfully" });
+      .json({ message: "User login Sucessfully",token });
 
 }
 
