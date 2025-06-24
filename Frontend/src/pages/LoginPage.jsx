@@ -27,6 +27,7 @@ try {
   console.log(data,".....");
   if (response.status === 200) {
     localStorage.setItem("token", data.token);
+    localStorage.setItem("Role", data.alreadyEmail.role);
     alert("success");
     setFormData({ email: "", password: "" });
   }

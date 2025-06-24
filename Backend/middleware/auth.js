@@ -21,12 +21,14 @@ console.log(decode.email,"decode");
 const email = decode.email
 
 const userDetail = await User.findOne({email})
+
 if(!userDetail){
     return res.status(400).send("user not found")
 }
 
 req.user = userDetail
-
 next()
+
+
 
 }

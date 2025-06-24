@@ -97,6 +97,21 @@ exports.createproduct = async(req,res)=>{
 }
 
 exports.getProduct = async(req,res)=>{
+    const userdetail = req.user;
+    console.log(userdetail,"???");
     const result = await Product.find().populate("userId")
+    if(userdetail.role === "admin"){
+        const result = await Product.find().populate("userId");
+        return res.status(200).json({message:"All Products",result})
+    }
+    else if(userdetail.role ==="user"){
+        const result = await Product.find({ userId: userdetail._id }).populate("userId");
+        return res.status(200).json({ message: "All Products", result });
+    }
+    else if(userdetail.role ==="client"){
+        const result = await Product.find().populate("userId").limit(1);
+        return res.status(200).json({ message: "All Products", result });
+    }
+
     return res.status(200).json({message:"All Products",result})
 }
